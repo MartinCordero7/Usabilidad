@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const post = JSON.parse(localStorage.getItem('post'));
+            if (post) {
+                const postContainer = document.createElement('div');
+                postContainer.className = 'post-container';
+
+                const postProfileName = document.createElement('h3');
+                postProfileName.textContent = 'Usuario Ejemplo'; // Nombre del perfil
+                postContainer.appendChild(postProfileName);
+
+                const postDate = document.createElement('p');
+                postDate.className = 'post-date';
+                postDate.textContent = new Date().toLocaleDateString();
+                postContainer.appendChild(postDate);
+
+                const postDetails = document.createElement('p');
+                postDetails.textContent = post.details;
+                postContainer.appendChild(postDetails);
+
+                if (post.file) {
+                    const postImage = document.createElement('img');
+                    postImage.src = post.file;
+                    postImage.alt = 'Imagen de la publicación';
+                    postImage.style.width = '100%';
+                    postContainer.appendChild(postImage);
+                }
+
+                document.getElementById('posts').appendChild(postContainer);
+
+                localStorage.removeItem('post');
+            }
+        });
+
+        function filterPosts(section) {
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+            const filteredPosts = section === 'todos' ? posts : posts.filter(post => post.type === section);
+
+            const postsContainer = document.getElementById('posts');
+            postsContainer.innerHTML = '';
+
+            filteredPosts.forEach(post => {
+                const postContainer = document.createElement('div');
+                postContainer.className = 'post-container';
+
+                const postProfileName = document.createElement('h3');
+                postProfileName.textContent = 'Usuario Ejemplo'; // Nombre del perfil
+                postContainer.appendChild(postProfileName);
+
+                const postDate = document.createElement('p');
+                postDate.className = 'post-date';
+                postDate.textContent = new Date().toLocaleDateString();
+                postContainer.appendChild(postDate);
+
+                const postDetails = document.createElement('p');
+                postDetails.textContent = post.details;
+                postContainer.appendChild(postDetails);
+
+                if (post.file) {
+                    const postImage = document.createElement('img');
+                    postImage.src = post.file;
+                    postImage.alt = 'Imagen de la publicación';
+                    postImage.style.width = '100%';
+                    postContainer.appendChild(postImage);
+                }
+
+                postsContainer.appendChild(postContainer);
+            });
+        }
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="main.html" class="nav-button">Home</a>
+        <a href="create-post.html" class="nav-button">Crear Publicación</a>
+        <div class="dropdown" style="margin-left:auto;">
+            <button class="dropbtn"></button>
+            <div class="dropdown-content">
+                <a href="profile.html">Perfil</a>
+                <a href="index.html">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+    <h1>Bienvenido a la Página Principal</h1>
+    <div id="posts" class="posts-container"></div>
+</body>
+</html>
