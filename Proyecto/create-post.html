@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Publicación</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        async function submitPost(event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const details = document.getElementById('details').value;
+            const type = document.getElementById('type').value;
+            const fileInput = document.getElementById('file');
+            const file = fileInput.files[0];
+
+            const post = {
+                title: title,
+                details: details,
+                type: type,
+                file: null
+            };
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = function(e) {
+                    post.file = e.target.result;
+                    savePost(post);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                savePost(post);
+            }
+        }
+
+        function savePost(post) {
+            const posts = JSON.parse(localStorage.getItem('posts')) || [];
+            posts.push(post);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            window.location.href = 'main.html';
+        }
+
+        function toggleMode() {
+            const body = document.body;
+            const currentMode = body.classList.contains('dark-mode') ? 'dark' : 'light';
+            const newMode = currentMode === 'dark' ? 'light' : 'dark';
+            body.classList.remove(`${currentMode}-mode`);
+            body.classList.add(`${newMode}-mode`);
+            localStorage.setItem('mode', newMode);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedMode = localStorage.getItem('mode') || 'light';
+            document.body.classList.add(`${savedMode}-mode`);
+        });
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="main.html" class="nav-button">Home</a>
+        <a href="create-post.html" class="nav-button">Crear Publicación</a>
+        <div class="dropdown" style="margin-left:auto;">
+            <button class="dropbtn">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </button>
+            <div class="dropdown-content">
+                <a href="profile.html">Perfil</a>
+                <a href="index.html">Cerrar Sesión</a>
+            </div>
+        </div>
+        <button onclick="toggleMode()">Toggle Mode</button>
+    </nav>
+    <div class="create-post-container">
+        <h2>Crear Publicación</h2>
+        <form onsubmit="submitPost(event)">
+            <label for="title">Nombre:</label>
+            <input type="text" id="title" name="title" required>
+            
+            <label for="details">Detalles:</label>
+            <textarea id="details" name="details" required></textarea>
+            
+            <label for="type">Tipo de Publicación:</label>
+            <select id="type" name="type" required>
+                <option value="poemas">Poemas</option>
+                <option value="musica">Música</option>
+                <option value="arte">Arte</option>
+                <option value="literatura">Literatura</option>
+            </select>
+            
+            <label for="file">Subir Archivo/Imagen:</label>
+            <input type="file" id="file" name="file" accept=".mp3,.mp4,.wav">
+            
+            <button type="submit">Publicar</button>
+        </form>
+    </div>
+</body>
+</html>
